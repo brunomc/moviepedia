@@ -1,6 +1,5 @@
 import axios from 'axios';
 import {env} from '../config/enviroment';
-import {Actions} from 'react-native-router-flux';
 //types
 const TYPES = {
   SEARCH: 'SEARCH',

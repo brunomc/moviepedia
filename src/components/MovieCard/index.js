@@ -2,7 +2,6 @@ import React from 'react';
 import {Image, TouchableOpacity} from 'react-native';
 import {Grid, Row, Col, Text} from 'native-base';
 import StarRating from 'react-native-star-rating';
-import styles from './styles';
 import {setMovie} from '../../ducks/details';
 import {connect} from 'react-redux';
 import {Actions} from 'react-native-router-flux';
