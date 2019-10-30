@@ -1,5 +1,7 @@
 # Moviepedia App (React Native 0.61)
 
+![Screens](https://imgur.com/BjYUzDq)
+
 # Instruções para rodar o app
 
 - 1 yarn
