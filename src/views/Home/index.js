@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, FlatList, ScrollView} from 'react-native';
+import {View, FlatList, ScrollView, TouchableOpacity} from 'react-native';
 import {Grid, Row, Col, Text, Container, Item, Input, Icon} from 'native-base';
 import styles from './styles';
 import MovieCard from '../../components/MovieCard';
@@ -8,11 +8,158 @@ import {connect} from 'react-redux';
 import {statements} from '@babel/template';
 
 class Home extends Component {
+  state = {
+    category: 'none',
+  };
   componentDidMount() {
     this.props.loadListMovies('now_playing');
     this.props.loadListMovies('top_rated');
     this.props.loadListMovies('upcoming');
     this.props.loadListMovies('popular');
+  }
+  seeAll(category) {
+    this.setState({
+      category,
+    });
+  }
+  renderNowPlaying() {
+    return (
+      <>
+        <Row size={10} style={styles.rowSubtitle}>
+          <Text style={styles.subtitle}>Em cartaz</Text>
+          <TouchableOpacity onPress={() => this.seeAll('now_playing')}>
+            <Text style={styles.seeAll}>Ver todos</Text>
+          </TouchableOpacity>
+        </Row>
+        <Row size={90}>
+          <FlatList
+            style={styles.videos_flatList}
+            horizontal={true}
+            data={this.props.moviesNowPlaying}
+            renderItem={({item}) => <MovieCard data={item} />}
+            ItemSeparatorComponent={() => {
+              return (
+                <View
+                  style={{
+                    height: '100%',
+                  }}
+                />
+              );
+            }}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </Row>
+      </>
+    );
+  }
+  renderPopular() {
+    return (
+      <>
+        <Row size={10} style={styles.rowSubtitle}>
+          <Text style={styles.subtitle}>Populares</Text>
+          <TouchableOpacity onPress={() => this.seeAll('popular')}>
+            <Text style={styles.seeAll}>Ver todos</Text>
+          </TouchableOpacity>
+        </Row>
+        <Row size={90}>
+          <FlatList
+            style={styles.videos_flatList}
+            horizontal={true}
+            data={this.props.moviesPopular}
+            renderItem={({item}) => <MovieCard data={item} />}
+            ItemSeparatorComponent={() => {
+              return (
+                <View
+                  style={{
+                    height: '100%',
+                  }}
+                />
+              );
+            }}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </Row>
+      </>
+    );
+  }
+  renderTopRated() {
+    return (
+      <>
+        <Row size={10} style={styles.rowSubtitle}>
+          <Text style={styles.subtitle}>Melhores avaliados</Text>
+          <TouchableOpacity onPress={() => this.seeAll('top_rated')}>
+            <Text style={styles.seeAll}>Ver todos</Text>
+          </TouchableOpacity>
+        </Row>
+        <Row size={90}>
+          <FlatList
+            style={styles.videos_flatList}
+            horizontal={true}
+            data={this.props.moviesTopRated}
+            renderItem={({item}) => <MovieCard data={item} />}
+            ItemSeparatorComponent={() => {
+              return (
+                <View
+                  style={{
+                    height: '100%',
+                  }}
+                />
+              );
+            }}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </Row>
+      </>
+    );
+  }
+  renderUpComing() {
+    return (
+      <>
+        <Row size={10} style={styles.rowSubtitle}>
+          <Text style={styles.subtitle}>Em Breve</Text>
+          <TouchableOpacity onPress={() => this.seeAll('upcoming')}>
+            <Text style={styles.seeAll}>Ver todos</Text>
+          </TouchableOpacity>
+        </Row>
+        <Row size={90}>
+          <FlatList
+            style={styles.videos_flatList}
+            horizontal={true}
+            data={this.props.moviesUpComing}
+            renderItem={({item}) => <MovieCard data={item} />}
+            ItemSeparatorComponent={() => {
+              return (
+                <View
+                  style={{
+                    height: '100%',
+                  }}
+                />
+              );
+            }}
+            keyExtractor={(item, index) => index.toString()}
+          />
+        </Row>
+      </>
+    );
+  }
+  renderVerticalList(data) {
+    return (
+      <>
+        <Row size={10} style={styles.rowSubtitle}>
+          <Text style={styles.subtitle}>Todos</Text>
+          <TouchableOpacity onPress={() => this.seeAll('none')}>
+            <Text style={styles.subtitle}>Ver por categorias</Text>
+          </TouchableOpacity>
+        </Row>
+        <Row>
+          <Col style={{justifyContent: 'center', alignItems: 'center'}}>
+            {data.map(movie => {
+              return <MovieCard data={movie} />;
+            })}
+          </Col>
+        </Row>
+      </>
+    );
   }
   render() {
     return (
@@ -69,96 +216,24 @@ class Home extends Component {
                     />
                   </Row>
                 </>
+              ) : this.state.category !== 'none' ? (
+                this.state.category == 'now_playing' ? (
+                  this.renderVerticalList(this.props.moviesNowPlaying)
+                ) : this.state.category == 'top_rated' ? (
+                  this.renderVerticalList(this.props.moviesTopRated)
+                ) : this.state.category == 'popular' ? (
+                  this.renderVerticalList(this.props.moviesPopular)
+                ) : this.state.category == 'upcoming' ? (
+                  this.renderVerticalList(this.props.moviesUpComing)
+                ) : (
+                  <></>
+                )
               ) : (
                 <>
-                  <Row size={10} style={styles.rowSubtitle}>
-                    <Text style={styles.subtitle}>Em cartaz</Text>
-                    <Text style={styles.seeAll}>Ver todos</Text>
-                  </Row>
-                  <Row size={90}>
-                    <FlatList
-                      style={styles.videos_flatList}
-                      horizontal={true}
-                      data={this.props.moviesNowPlaying}
-                      renderItem={({item}) => <MovieCard data={item} />}
-                      ItemSeparatorComponent={() => {
-                        return (
-                          <View
-                            style={{
-                              height: '100%',
-                            }}
-                          />
-                        );
-                      }}
-                      keyExtractor={(item, index) => index.toString()}
-                    />
-                  </Row>
-                  <Row size={10} style={styles.rowSubtitle}>
-                    <Text style={styles.subtitle}>Populares</Text>
-                    <Text style={styles.seeAll}>Ver todos</Text>
-                  </Row>
-                  <Row size={90}>
-                    <FlatList
-                      style={styles.videos_flatList}
-                      horizontal={true}
-                      data={this.props.moviesPopular}
-                      renderItem={({item}) => <MovieCard data={item} />}
-                      ItemSeparatorComponent={() => {
-                        return (
-                          <View
-                            style={{
-                              height: '100%',
-                            }}
-                          />
-                        );
-                      }}
-                      keyExtractor={(item, index) => index.toString()}
-                    />
-                  </Row>
-                  <Row size={10} style={styles.rowSubtitle}>
-                    <Text style={styles.subtitle}>Melhores avaliados</Text>
-                    <Text style={styles.seeAll}>Ver todos</Text>
-                  </Row>
-                  <Row size={90}>
-                    <FlatList
-                      style={styles.videos_flatList}
-                      horizontal={true}
-                      data={this.props.moviesTopRated}
-                      renderItem={({item}) => <MovieCard data={item} />}
-                      ItemSeparatorComponent={() => {
-                        return (
-                          <View
-                            style={{
-                              height: '100%',
-                            }}
-                          />
-                        );
-                      }}
-                      keyExtractor={(item, index) => index.toString()}
-                    />
-                  </Row>
-                  <Row size={10} style={styles.rowSubtitle}>
-                    <Text style={styles.subtitle}>Em Breve</Text>
-                    <Text style={styles.seeAll}>Ver todos</Text>
-                  </Row>
-                  <Row size={90}>
-                    <FlatList
-                      style={styles.videos_flatList}
-                      horizontal={true}
-                      data={this.props.moviesUpComing}
-                      renderItem={({item}) => <MovieCard data={item} />}
-                      ItemSeparatorComponent={() => {
-                        return (
-                          <View
-                            style={{
-                              height: '100%',
-                            }}
-                          />
-                        );
-                      }}
-                      keyExtractor={(item, index) => index.toString()}
-                    />
-                  </Row>
+                  {this.renderNowPlaying()}
+                  {this.renderPopular()}
+                  {this.renderTopRated()}
+                  {this.renderUpComing()}
                 </>
               )}
             </ScrollView>

@@ -1,8 +1,21 @@
 import axios from 'axios';
 import {env} from '../config/enviroment';
 import {Actions} from 'react-native-router-flux';
+//types
+const TYPES = {
+  SEARCH: 'SEARCH',
+  SET_SEARCH_INPUT: 'SET_SEARCH_INPUT',
+  SET_GENRES: 'SET_GENRES',
+  GET_GENRES_ERROR: 'GET_GENRES_ERROR',
+  LIST_NOW_PLAYING: 'LIST_NOW_PLAYING',
+  LIST_TOP_RATED: 'LIST_TOP_RATED',
+  LIST_POPULAR: 'LIST_POPULAR',
+  LIST_UPCOMING: 'LIST_UPCOMING',
+  GET_LIST_ERROR: 'GET_LIST_ERROR',
+};
+//actions
 export const setSearchInput = data => {
-  return {type: 'SET_SEARCH_INPUT', payload: data};
+  return {type: TYPES.SET_SEARCH_INPUT, payload: data};
 };
 export const loadListMovies = category => {
   return dispatch => {
@@ -40,37 +53,37 @@ const loadGenresSuccess = (list, ids, dispatch) => {
     });
   });
   dispatch({
-    type: 'SET_GENRES',
+    type: TYPES.SET_GENRES,
     payload: genres,
   });
 };
 const loadGenresError = (error, dispatch) => {
   dispatch({
-    type: 'GET_GENRES_ERROR',
+    type: TYPES.GET_GENRES_ERROR,
     payload: 'Não foi possível retornar gêneros',
   });
 };
 const loadListMoviesSuccess = (list, category, dispatch) => {
   switch (category) {
     case 'now_playing': {
-      dispatch({type: 'LIST_NOW_PLAYING', payload: list});
+      dispatch({type: TYPES.LIST_NOW_PLAYING, payload: list});
       break;
     }
     case 'top_rated': {
-      dispatch({type: 'LIST_TOP_RATED', payload: list});
+      dispatch({type: TYPES.LIST_TOP_RATED, payload: list});
       break;
     }
     case 'popular': {
-      dispatch({type: 'LIST_POPULAR', payload: list});
+      dispatch({type: TYPES.LIST_POPULAR, payload: list});
       break;
     }
     case 'upcoming': {
-      dispatch({type: 'LIST_UPCOMING', payload: list});
+      dispatch({type: TYPES.LIST_UPCOMING, payload: list});
       break;
     }
     default: {
       dispatch({
-        type: 'GET_LIST_ERROR',
+        type: TYPES.GET_LIST_ERROR,
         payload: 'Não foi possível retornar todas as categorias',
       });
     }
@@ -78,13 +91,12 @@ const loadListMoviesSuccess = (list, category, dispatch) => {
 };
 const loadListMoviesError = error => {
   dispatch({
-    type: 'GET_LIST_ERROR',
+    type: TYPES.GET_LIST_ERROR,
     payload: 'Não foi possível retornar todas as categorias',
   });
 };
 
 export const search = data => {
-  console.log('data', data);
   return dispatch => {
     axios
       .get(
@@ -93,19 +105,20 @@ export const search = data => {
         }&query=${data}&language=pt`,
       )
       .then(res => {
-        searchSucces(res.data.results, dispatch);
+        searchSuccess(res.data.results, dispatch);
       })
       .catch(res => {
         searchError(res, dispatch);
       });
   };
 };
-const searchSucces = (list, dispatch) => {
+const searchSuccess = (list, dispatch) => {
   dispatch({
-    type: 'SEARCH',
+    type: TYPES.SEARCH,
     payload: list,
   });
 };
+//reducer
 const INITIAL_STATE = {
   movies: [],
   movie: {},
@@ -120,28 +133,28 @@ const INITIAL_STATE = {
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case 'SEARCH': {
+    case TYPES.SEARCH: {
       return {...state, movies: action.payload};
     }
-    case 'SET_SEARCH_INPUT': {
+    case TYPES.SET_SEARCH_INPUT: {
       return {...state, searchInput: action.payload};
     }
-    case 'SET_GENRES': {
+    case TYPES.SET_GENRES: {
       return {...state, genres: action.payload};
     }
-    case 'LIST_NOW_PLAYING': {
+    case TYPES.LIST_NOW_PLAYING: {
       return {...state, moviesNowPlaying: action.payload};
     }
-    case 'LIST_POPULAR': {
+    case TYPES.LIST_POPULAR: {
       return {...state, moviesPopular: action.payload};
     }
-    case 'LIST_TOP_RATED': {
+    case TYPES.LIST_TOP_RATED: {
       return {...state, moviesTopRated: action.payload};
     }
-    case 'LIST_UPCOMING': {
+    case TYPES.LIST_UPCOMING: {
       return {...state, moviesUpComing: action.payload};
     }
-    case 'GET_LIST_ERROR': {
+    case TYPES.GET_LIST_ERROR: {
       return {...state, error: action.payload};
     }
     default: {
