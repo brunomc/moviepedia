@@ -5,7 +5,6 @@ import styles from './styles';
 import MovieCard from '../../components/MovieCard';
 import {loadListMovies, search, setSearchInput} from '../../ducks/search';
 import {connect} from 'react-redux';
-import {statements} from '@babel/template';
 
 class Home extends Component {
   state = {
